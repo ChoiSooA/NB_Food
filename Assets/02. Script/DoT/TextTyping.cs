@@ -12,7 +12,7 @@ public class TextTyping : MonoBehaviour
     bool coroutine_running = false;
     string originalText;
 
-    float typingSpeed = 0.1f;
+    public float typingSpeed = 0.1f;
 
     private void Awake()
     {

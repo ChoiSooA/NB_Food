@@ -11,7 +11,6 @@ public class AutoFade : MonoBehaviour
     public UnityEvent ChangeEvent;
     public float fadeDurationTime = 1f;
 
-    int eventCount = 0;
     private void Start()
     {
         fadeImage.gameObject.SetActive(false);

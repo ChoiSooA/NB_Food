@@ -32,7 +32,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emoji_Hi
+  m_Name: Hi
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -59,7 +59,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Action_Jump
+  m_Name: Jump
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -111,7 +111,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emoji_SideToSide
+  m_Name: SideToSide
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -235,7 +235,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emoji_Cry
+  m_Name: Cry
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -397,7 +397,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.03928561
+  m_TransitionDuration: 0.13727333
   m_TransitionOffset: 0
   m_ExitTime: 0
   m_HasExitTime: 0
@@ -425,7 +425,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.090420015
   m_TransitionOffset: 0
   m_ExitTime: 0
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -538,7 +538,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emoji_Applaud
+  m_Name: Applaud
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -590,7 +590,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emoji_Cheer
+  m_Name: Cheer
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -617,7 +617,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Stand_Idle1
+  m_Name: Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -655,28 +655,28 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -9045485278148535694}
-    m_Position: {x: 650, y: -140, z: 0}
+    m_Position: {x: 650, y: -120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7647213517409090153}
-    m_Position: {x: 650, y: 290, z: 0}
+    m_Position: {x: 650, y: 240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 513855167171776317}
-    m_Position: {x: 650, y: 350, z: 0}
+    m_Position: {x: 650, y: 300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4726663518204254457}
-    m_Position: {x: 650, y: -80, z: 0}
+    m_Position: {x: 650, y: -60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3487164479488738952}
-    m_Position: {x: 650, y: -10, z: 0}
+    m_Position: {x: 650, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -9114615907552123344}
-    m_Position: {x: 650, y: 410, z: 0}
+    m_Position: {x: 650, y: 360, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7274024564915034050}
-    m_Position: {x: 650, y: 60, z: 0}
+    m_Position: {x: 650, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5591760649500273146}
-    m_Position: {x: 650, y: 140, z: 0}
+    m_Position: {x: 650, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6138015872662926973}
     m_Position: {x: 240, y: 120, z: 0}
@@ -697,7 +697,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Emoji_Nice
+  m_Name: Nice
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -724,7 +724,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dance_2
+  m_Name: Dance
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -761,9 +761,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.17115532
-  m_TransitionOffset: 0
-  m_ExitTime: 0.028834486
+  m_TransitionDuration: 0.321348
+  m_TransitionOffset: 0.14099991
+  m_ExitTime: 0.13394357
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
-public class CheckRight : MonoBehaviour
+public class Mission1 : MonoBehaviour
 {
     public TMP_Text ment;
+    public TMP_Text how_many_left;
 
     int totalCount = 9;
     int healthTotalCount = 4;
@@ -14,9 +15,40 @@ public class CheckRight : MonoBehaviour
 
     public GameObject SuccessAll;
 
-    private void Start()
+    public Transform goodGroup;
+    public Transform badGroup;
+
+    public ParticleSystem popParticle;
+
+    private void OnEnable()
     {
+        how_many_left.text = $"{healthCount}/{healthTotalCount}"; 
+        if (goodGroup != null)
+        {
+            foreach (Transform child in goodGroup)
+            {
+                child.gameObject.SetActive(true);
+                child.GetComponent<Collider>().enabled = true; // 클릭 가능하게
+            }
+        }
+        if (badGroup != null)
+        {
+            foreach (Transform child in badGroup)
+            {
+                child.gameObject.SetActive(true);
+                child.GetComponent<Collider>().enabled = true; // 클릭 가능하게
+                child.GetChild(0).gameObject.SetActive(false);      //이건 x표시 없애는 겁니다 그래서 true에는 없음
+                child.GetChild(1).gameObject.SetActive(true);      //이건 파티클 켜주는 겁니다 그래서 true에는 없음
+            }
+        }
         
+        // 카운트 초기화
+        curruntCount = 0;
+        healthCount = 0;
+
+        // 성공창 숨기기
+        if (SuccessAll != null)
+            SuccessAll.transform.GetChild(0).GetComponent<DoTEffect>().Close();
     }
 
     public void IsItRight()
@@ -30,9 +62,13 @@ public class CheckRight : MonoBehaviour
         {
             AnimationController.Instance.PlayOneTime("Clap");
             Audio_Manager.Instance.PlayEffect(1);
+            popParticle.transform.position = touchObj.transform.position;
+            popParticle.Play();
             ment.DOText($"{touchObj.name}{particle} 몸에 좋은 음식이 맞아요!", 1f);
+            touchObj.gameObject.SetActive(false);
             Debug.Log("정답입니다.");
             healthCount++;
+            how_many_left.text = $"{healthCount}/{healthTotalCount}"; // 점수 업데이트
             if (healthCount == healthTotalCount)
             {
                 AnimationController.Instance.PlayOneTime("Cheer");
@@ -44,6 +80,9 @@ public class CheckRight : MonoBehaviour
         {
             AnimationController.Instance.PlayOneTime("SideToSide");
             Audio_Manager.Instance.PlayEffect(2);
+            touchObj.transform.GetChild(0).gameObject.SetActive(true);          //X 표시 켜주는 거임
+            touchObj.transform.GetChild(1).gameObject.SetActive(false);         //파티클 꺼주는 거임
+            touchObj.GetComponent<Collider>().enabled = false;       //X표시가 켜지면 더이상 클릭 못하게 막는거임
             ment.DOText($"{touchObj.name}{particle} 몸에 좋은 음식이 아니에요!", 1f);
             Debug.Log("오답입니다.");
         }
@@ -51,7 +90,6 @@ public class CheckRight : MonoBehaviour
         {
             return;
         }
-        touchObj.gameObject.SetActive(false);
         curruntCount++;
 
         if (curruntCount == totalCount)

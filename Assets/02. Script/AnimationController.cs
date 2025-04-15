@@ -2,33 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using System.Linq;
 
 public class AnimationController : MonoBehaviour
 {
     public GameObject Character;
-
     public Animator animator;
 
     public Vector3 resetPosition;
     public Vector3 resetRotation;
     public Vector3 resetScale;
 
-    public static AnimationController Instance { get; private set; }
+    Coroutine currentCoroutine;
 
+    public static AnimationController Instance { get; private set; }
 
     private void Awake()
     {
         animator = Character.GetComponent<Animator>();
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
+
     private void Start()
     {
         resetPosition = Character.transform.localPosition;
@@ -42,110 +38,141 @@ public class AnimationController : MonoBehaviour
         Character.transform.localRotation = Quaternion.Euler(resetRotation);
         Character.transform.localScale = resetScale;
     }
+
     private void OnDisable()
     {
         PlayAnimation("Idle");
         ResetVector();
     }
 
-    void PlayAnimation(string animationName)
+    public void PlayAnimation(string animationName)
     {
-        animator.SetTrigger(animationName);
+        Debug.Log($"[PlayAnimation] {animationName}");
+
+        foreach (var param in animator.parameters)
+        {
+            if (param.type == AnimatorControllerParameterType.Trigger)
+            {
+                animator.ResetTrigger(param.name);
+            }
+        }
+
+        if (animationName != "Idle")
+            animator.Play("Idle", 0, 0f); // 강제 리셋
+
+        StartCoroutine(TriggerNextFrame(animationName));
     }
+
+    IEnumerator TriggerNextFrame(string triggerName)
+    {
+        yield return null;
+        animator.SetTrigger(triggerName);
+    }
+
     public void PlayOneTime(string animationName)
     {
-        StartCoroutine(PlayOneTimeCo(animationName));
+        if (currentCoroutine != null)           //기존 실행 중인 코루틴 정지
+            StopCoroutine(currentCoroutine);
+        currentCoroutine = StartCoroutine(PlayOneTimeCo(animationName));    //새 애니메이션 트리거 실행
     }
+
+    IEnumerator PlayOneTimeCo(string animName)
+    {
+        PlayAnimation(animName);
+
+        // 상태 진입 대기
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName(animName));
+
+        float length = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(length);
+
+        Debug.Log(animName + " 애니메이션 종료");
+        PlayAnimation("Idle");
+
+        currentCoroutine = null;
+    }
+
     public void playAnimSet(int animnum)
+    {
+        playAnimSetCode(animnum, null);
+    }
+    public void playAnimSetCode(int animnum, System.Action onComplete = null)
     {
         gameObject.SetActive(true);
         StopAllCoroutines();
         switch (animnum)
         {
-            case 0:
-                StartCoroutine(AnimOne());
-                break;
-            case 1:
-                StartCoroutine(AnimSide());
-                break;
-            case 2:
-                StartCoroutine(AnimTwo());
-                break;
-            case 3:
-                StartCoroutine(AnimThree());
-                break;
+            case 0: StartCoroutine(AnimOne(onComplete)); break;
+            case 1: StartCoroutine(AnimSide(onComplete)); break;
+            case 2: StartCoroutine(AnimTwo(onComplete)); break;
+            case 3: StartCoroutine(AnimThree(onComplete)); break;
         }
     }
 
     void jump()
     {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Jump")) return;
         PlayAnimation("Jump");
-        Character.transform.DOMoveY(-1.5f, 0.7f).SetEase(Ease.Linear);  //DOMoveY는 y축으로 이동하는 함수, Y축으로 -1.5만큼이 아니라 Y를 -1.5로 만들어줌
+        Character.transform.DOMoveY(-1.5f, 0.7f).SetEase(Ease.Linear);
     }
 
     public void moveSide()
     {
-        Character.transform.DOLocalMove(new Vector3(-1.45f,-1.7f,6.24f), 0.7f).SetEase(Ease.Linear);  //DOMoveX는 x축으로 이동하는 함수
-        Character.transform.DOLocalRotate(new Vector3(0f,167.5f,0f), 0.7f).SetEase(Ease.Linear);
-    }
-    
-    IEnumerator AnimOne()                                   //0번 애니메이션
-    {
-        ResetVector();
-        yield return new WaitForSeconds(0.5f);   //애니메이션 시작 전 대기 시간
-        jump();
-        yield return new WaitForSeconds(1f);
-        PlayAnimation("Hi");
-        yield return new WaitForSeconds(1.5f);
-        PlayAnimation("Idle");
-        yield return new WaitForSeconds(7f);   //마지막 nice 전까지 대기 시간
-        PlayAnimation("Nice");
-        yield return new WaitForSeconds(3f);
-        PlayAnimation("Idle");
-    }
-    IEnumerator AnimSide()                                  //1번 애니메이션
-    {
-        Character.transform.localPosition = new Vector3(-1.45f, -4f, 6.24f);
-        yield return new WaitForSeconds(0.01f);   //애니메이션 시작 전 대기 시간
-        Character.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
-        yield return new WaitForSeconds(0.5f);   //애니메이션 시작 전 대기 시간
-        jump();
-        moveSide();
-    }                                                   
-    IEnumerator AnimTwo()                                   //2번 애니메이션
-    {
-        ResetVector();
-        yield return new WaitForSeconds(0.5f);   //애니메이션 시작 전 대기 시간
-        jump();
-        yield return new WaitForSeconds(1f);
-        PlayAnimation("Clap");
-        yield return new WaitForSeconds(2f);
-        PlayAnimation("Idle");
-        yield return new WaitForSeconds(4f);    //마지막 cheer 전까지 대기 시간
-        PlayAnimation("Cheer");
-    }
-    IEnumerator AnimThree()                                 //3번 애니메이션
-    {
-        ResetVector();
-        yield return new WaitForSeconds(0.5f);   //애니메이션 시작 전 대기 시간
-        jump();
-        yield return new WaitForSeconds(1f);
-        PlayAnimation("Clap");
-        Audio_Manager.Instance.PlayEffect(3);
-        yield return new WaitForSeconds(2.2f);
-        PlayAnimation("Idle");
-        yield return new WaitForSeconds(9f);    //마지막 clap 전까지 대기 시간
-        PlayAnimation("Hi");
+        Character.transform.DOLocalMove(new Vector3(-1.45f, -1.7f, 6.24f), 0.7f).SetEase(Ease.Linear);
+        Character.transform.DOLocalRotate(new Vector3(0f, 167.5f, 0f), 0.7f).SetEase(Ease.Linear);
     }
 
-    IEnumerator PlayOneTimeCo(string animName)
+    IEnumerator AnimOne(System.Action onComplete = null)   //0
     {
-        StopCoroutine(PlayOneTimeCo(animName)); //애니메이션이 실행 중일 때 다시 실행하면 애니메이션이 중복으로 실행되는 것을 방지
-        PlayAnimation("idle");
-        PlayAnimation(animName);
-        yield return new WaitForSeconds(0.01f);     //애니메이션이 실행 후 애니메이션 시간을 읽어올 수 있어 실행까지 아주 작은 대기
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-        Debug.Log(animName + " 애니메이션 종료");
+        ResetVector();
+        yield return new WaitForSeconds(0.5f);
+        jump();
+        yield return new WaitForSeconds(1f);
+        PlayAnimation("Hi");
+        yield return new WaitForSeconds(1.84f);
         PlayAnimation("Idle");
+        yield return new WaitForSeconds(7f);
+        PlayAnimation("Nice");
+        yield return new WaitForSeconds(3f);
+        PlayAnimation("Idle"); 
+        
+        onComplete?.Invoke(); 
+    }
+
+    IEnumerator AnimSide(System.Action onComplete = null)       //1
+    {
+        Character.transform.localPosition = new Vector3(-1.45f, -4f, 6.24f);
+        yield return new WaitForSeconds(0.01f);
+        Character.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+        yield return new WaitForSeconds(0.5f);
+        jump();
+        moveSide();
+
+        onComplete?.Invoke(); 
+    }
+
+    IEnumerator AnimTwo(System.Action onComplete = null)        //2
+    {
+        ResetVector();
+        yield return new WaitForSeconds(0.5f);
+        jump();
+        yield return new WaitForSeconds(1f);
+        PlayAnimation("Clap");
+        yield return new WaitForSeconds(2.27f);
+        PlayAnimation("Idle");
+        yield return new WaitForSeconds(8f);
+        PlayAnimation("Cheer");
+
+        onComplete?.Invoke();
+    }
+
+    IEnumerator AnimThree(System.Action onComplete = null)      //3
+    {
+        Character.transform.localPosition = new Vector3(0.9f, -4f, 7f);
+        yield return new WaitForSeconds(0.5f);
+        jump();
+        yield return new WaitForSeconds(0.9f);
+
+        onComplete?.Invoke(); 
     }
 }

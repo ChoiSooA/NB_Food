@@ -33,13 +33,14 @@ public class DoTEffect : MonoBehaviour
 
     private void Awake()
     {
+        
+    }
+    private void OnEnable()
+    {
         OriginalSize = transform.localScale;
         OriginalPosition = transform.localPosition;
         if (activeOff != null)
             activeOff.SetActive(true);
-    }
-    private void OnEnable()
-    {
         StartDoT();
     }
     public void Close()

@@ -29,7 +29,7 @@ public class NextActive : MonoBehaviour
         }
         else
         {
-            Debug.LogError("다음 버튼을 설정해주세요");
+            Debug.Log("다음 버튼을 없음");
         }
         if (startFalseObject.Length == 0)
         {
