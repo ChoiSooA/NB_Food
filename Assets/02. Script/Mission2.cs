@@ -18,38 +18,41 @@ public class Mission2 : MonoBehaviour
 
     public GameObject CompleteButton;
 
-    private void OnDisable()
+    private void OnEnable()
     {
-        foreach (var pair in objectIndexMap)
-        {
-            GameObject obj = pair.Key;
-            TouchSelf touchSelf = obj.GetComponent<TouchSelf>();
-
-            obj.transform.DOKill();
-            obj.transform.DOMove(touchSelf.originalPos, 0.5f);
-
-            obj.transform.DOMove(touchSelf.originalPos + new Vector3(
-                Random.Range(-0.1f, 0.1f),
-                Random.Range(-0.1f, 0.1f),
-                0f), Random.Range(2f, 3f))
-                .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo);
-
-            touchSelf.isTouching = false;
-        }
-
+        // 초기화 먼저
         for (int i = 0; i < isFilled.Length; i++)
             isFilled[i] = false;
 
-        objectIndexMap.Clear();
         howManyObjects = 0;
         score = 0;
-
         goodNames.Clear();
         badNames.Clear();
 
         if (CompleteButton != null)
             CompleteButton.SetActive(false);
+
+        // 복귀 처리 후 Clear
+        foreach (var pair in objectIndexMap)
+        {
+            GameObject obj = pair.Key;
+            TouchSelf touchSelf = obj.GetComponent<TouchSelf>();
+            touchSelf.isTouching = false;
+
+            obj.transform.DOKill();
+
+            obj.transform.DOMove(touchSelf.originalPos, 0.5f).OnComplete(() =>
+            {
+                obj.transform.DOMove(touchSelf.originalPos + new Vector3(
+                    Random.Range(-0.1f, 0.1f),
+                    Random.Range(-0.1f, 0.1f),
+                    0f), Random.Range(2f, 3f))
+                    .SetEase(Ease.InOutSine)
+                    .SetLoops(-1, LoopType.Yoyo);
+            });
+        }
+
+        objectIndexMap.Clear();
     }
 
     private void Start()
@@ -101,7 +104,6 @@ public class Mission2 : MonoBehaviour
 
             if (howManyObjects >= 3)
             {
-                Debug.Log("3개 이상 담김");
                 if (CompleteButton != null)
                     CompleteButton.SetActive(true);
             }
@@ -130,11 +132,8 @@ public class Mission2 : MonoBehaviour
                 badNames.Remove(touchObj.name);
             }
 
-            Debug.Log("지금 안에 " + howManyObjects + "개 있음");
-
             if (howManyObjects < 3)
             {
-                Debug.Log("3개 아래로 떨어짐");
                 if (CompleteButton != null)
                     CompleteButton.SetActive(false);
             }
@@ -154,10 +153,12 @@ public class Mission2 : MonoBehaviour
     IEnumerator MoveOriginPos(GameObject touchObj)
     {
         Vector3 origin = touchObj.GetComponent<TouchSelf>().originalPos;
+        touchObj.transform.DOKill();
         touchObj.transform.DOMove(origin, 0.5f);
+
         yield return new WaitForSeconds(0.5f);
 
-        touchObj.transform.DOMove(touchObj.transform.position + new Vector3(
+        touchObj.transform.DOMove(origin + new Vector3(
             Random.Range(-0.1f, 0.1f),
             Random.Range(-0.1f, 0.1f),
             0f), Random.Range(2f, 3f))

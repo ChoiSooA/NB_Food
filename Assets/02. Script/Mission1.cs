@@ -20,6 +20,13 @@ public class Mission1 : MonoBehaviour
 
     public ParticleSystem popParticle;
 
+    public AudioClip[] right_wrong; //0: 맞음, 1: 틀림
+    AudioSource audioSource;
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     private void OnEnable()
     {
         how_many_left.text = $"{healthCount}/{healthTotalCount}"; 
@@ -50,6 +57,10 @@ public class Mission1 : MonoBehaviour
         if (SuccessAll != null)
             SuccessAll.transform.GetChild(0).GetComponent<DoTEffect>().Close();
     }
+    private void OnDisable()
+    {
+        audioSource.Stop();
+    }
 
     public void IsItRight()
     {
@@ -64,6 +75,7 @@ public class Mission1 : MonoBehaviour
             Audio_Manager.Instance.PlayEffect(1);
             popParticle.transform.position = touchObj.transform.position;
             popParticle.Play();
+            PlaySoundExclusive(right_wrong[0]);
             ment.DOText($"{touchObj.name}{particle} 몸에 좋은 음식이 맞아요!", 1f);
             touchObj.gameObject.SetActive(false);
             Debug.Log("정답입니다.");
@@ -83,6 +95,7 @@ public class Mission1 : MonoBehaviour
             touchObj.transform.GetChild(0).gameObject.SetActive(true);          //X 표시 켜주는 거임
             touchObj.transform.GetChild(1).gameObject.SetActive(false);         //파티클 꺼주는 거임
             touchObj.GetComponent<Collider>().enabled = false;       //X표시가 켜지면 더이상 클릭 못하게 막는거임
+            PlaySoundExclusive(right_wrong[1]);
             ment.DOText($"{touchObj.name}{particle} 몸에 좋은 음식이 아니에요!", 1f);
             Debug.Log("오답입니다.");
         }
@@ -111,6 +124,16 @@ public class Mission1 : MonoBehaviour
         int jongseongIndex = unicode % 28;
 
         return (jongseongIndex == 0) ? "는" : "은";
+    }
+
+    public void PlaySoundExclusive(AudioClip clip)
+    {
+        if (audioSource.clip!=null)
+        {
+            Audio_Manager.Instance.Ment_audioSource.Stop();      // 현재 재생 중인 사운드 정지
+        }
+        Audio_Manager.Instance.Ment_audioSource.clip = clip;
+        Audio_Manager.Instance.Ment_audioSource.Play();      // 새로운 클립 재생
     }
 
     IEnumerator AllDone()   //마지막 오브젝트를 확인한 후 적당한 시간이 지나면 성공창을 띄우는 코루틴

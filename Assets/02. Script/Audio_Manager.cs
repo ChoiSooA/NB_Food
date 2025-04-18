@@ -4,6 +4,7 @@ public class Audio_Manager : MonoBehaviour
 {
     public AudioSource BGM_audioSource;
     public AudioSource Effect_audioSource;
+    public AudioSource Ment_audioSource;
     public AudioClip Bgm_Clip;
     public AudioClip[] Effect_Clip;
 
@@ -43,6 +44,15 @@ public class Audio_Manager : MonoBehaviour
             Effect_audioSource = transform.GetChild(1).gameObject.GetComponent<AudioSource>();
         }
 
+        if (Ment_audioSource == null)
+        {
+            Ment_audioSource = transform.GetChild(2).gameObject.AddComponent<AudioSource>();
+        }
+        else
+        {
+            Ment_audioSource = transform.GetChild(2).gameObject.GetComponent<AudioSource>();
+        }
+
         if (Bgm_Clip != null)
         {
             BGM_audioSource.clip = Bgm_Clip;
@@ -80,5 +90,11 @@ public class Audio_Manager : MonoBehaviour
         Effect_audioSource.PlayOneShot(Effect_Clip[index]);
     }
 
+    public void PlayMent(AudioClip clip)
+    {
+        Ment_audioSource.Stop(); // 현재 재생 중인 사운드 정지
+        Ment_audioSource.clip = clip;
+        Ment_audioSource.Play();
+    }
 
 }

@@ -9,6 +9,7 @@ public class TextTyping : MonoBehaviour
     [SerializeField] private UnityEvent event_finish;   //타이핑이 끝나고 실행하고 싶은 이벤트
     TMP_Text outMent;
     public string[] addment;
+    public AudioClip[] mentClip; 
     bool coroutine_running = false;
     string originalText;
 
@@ -29,6 +30,7 @@ public class TextTyping : MonoBehaviour
         }
         else if (addment.Length == 0 && originalText != null) //addment가 없고 originalText가 있을 때
         {
+            Audio_Manager.Instance.PlayMent(mentClip[0]);
             StartCoroutine(FinishOriginalMent());
         }
     }
@@ -46,6 +48,7 @@ public class TextTyping : MonoBehaviour
         for (int i = 0; i < addment.Length; i++)
         {
             outMent.text = "";
+            Audio_Manager.Instance.PlayMent(mentClip[i]);
             float nextSpeed = addment[i].Length * typingSpeed;
             outMent.DOText(addment[i], nextSpeed).SetEase(Ease.Linear);
             yield return new WaitForSeconds(nextSpeed + 0.6f);

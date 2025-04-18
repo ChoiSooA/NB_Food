@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
+using UnityEditor;
 
 public class AnimationController : MonoBehaviour
 {
@@ -106,6 +108,7 @@ public class AnimationController : MonoBehaviour
             case 1: StartCoroutine(AnimSide(onComplete)); break;
             case 2: StartCoroutine(AnimTwo(onComplete)); break;
             case 3: StartCoroutine(AnimThree(onComplete)); break;
+            case 4: StartCoroutine(AnimFour(onComplete)); break;
         }
     }
 
@@ -131,7 +134,7 @@ public class AnimationController : MonoBehaviour
         PlayAnimation("Hi");
         yield return new WaitForSeconds(1.84f);
         PlayAnimation("Idle");
-        yield return new WaitForSeconds(7f);
+        yield return new WaitForSeconds(15f);
         PlayAnimation("Nice");
         yield return new WaitForSeconds(3f);
         PlayAnimation("Idle"); 
@@ -160,7 +163,7 @@ public class AnimationController : MonoBehaviour
         PlayAnimation("Clap");
         yield return new WaitForSeconds(2.27f);
         PlayAnimation("Idle");
-        yield return new WaitForSeconds(8f);
+        yield return new WaitForSeconds(15f);
         PlayAnimation("Cheer");
 
         onComplete?.Invoke();
@@ -168,11 +171,27 @@ public class AnimationController : MonoBehaviour
 
     IEnumerator AnimThree(System.Action onComplete = null)      //3
     {
+
         Character.transform.localPosition = new Vector3(0.9f, -4f, 7f);
         yield return new WaitForSeconds(0.5f);
         jump();
         yield return new WaitForSeconds(0.9f);
 
         onComplete?.Invoke(); 
+    }
+    IEnumerator AnimFour(System.Action onComplete = null)        //4
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (!stateInfo.IsName("Dance"))
+        {
+            PlayOneTime("Idle");
+            yield return new WaitForSeconds(6f);
+            PlayOneTime("Clap");
+        }
+        yield return new WaitForSeconds(5f);
+        PlayOneTime("Idle");
+        yield return new WaitForSeconds(0.01f);
+        PlayOneTime("Hi");
+        onComplete?.Invoke();
     }
 }
