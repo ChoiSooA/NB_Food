@@ -52,6 +52,7 @@ public class Mission1 : MonoBehaviour
         // 카운트 초기화
         curruntCount = 0;
         healthCount = 0;
+        how_many_left.text = $"{healthCount}/{healthTotalCount}"; // 점수 업데이트
 
         // 성공창 숨기기
         if (SuccessAll != null)
