@@ -66,6 +66,7 @@ public class UI_Manager : MonoBehaviour
         {
             SetBgmVolume();
         });
+        display.Set3DMode(true);
     }
 
     public void Quit()
